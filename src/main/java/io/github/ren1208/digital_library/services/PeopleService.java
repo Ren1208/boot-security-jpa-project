@@ -48,6 +48,12 @@ public class PeopleService {
     }
 
     @Transactional
+    public void updateUserRole(Person updatedPerson, String role) {
+        updatedPerson.setRole(role);
+        peopleRepository.save(updatedPerson);
+    }
+
+    @Transactional
     public void delete(int id){
         peopleRepository.deleteById(id);
     }
@@ -75,5 +81,6 @@ public class PeopleService {
     public Optional<Person> getPersonByName(String name){
         return peopleRepository.findByName(name);
     }
+
 
 }

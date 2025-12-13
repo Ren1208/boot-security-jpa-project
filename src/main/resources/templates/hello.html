@@ -1,25 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Hello</title>
 </head>
 <body>
 
-<p>Здравствуйте, <span th:text="${person.name}">Имя</span></p>
+<p>
+    Здравствуйте,
+    <span th:if="${#authorization.expression('hasRole(''ADMIN'')')}">администратор</span>
+    <span th:if="${#authorization.expression('hasRole(''USER'')')}">пользователь</span>
+    <span th:text="${person.name}">Имя</span>
+</p>
 <hr/>
 <br/>
+
 <form th:action="@{/books}" th:method="GET">
-    <input type="submit" value="Посмотреть список книг"/>
+    <input type="submit" value="Список книг"/>
 </form>
 <br/>
+
+<div sec:authorize="hasRole('ADMIN')">
+    <form th:action="@{/people}" th:method="GET">
+        <input type="submit" value="Список людей"/>
+    </form>
+    <br/>
+</div>
+
 <form th:action="@{/showUserInfo}" th:method="GET">
     <input type="submit" value="Вывести информацию о себе в консоль разработчика"/>
+</form>
+<br/>
+<form th:action="@{/become-admin}" th:method="GET">
+    <input type="submit" value="Стать администратором"/>
 </form>
 <br/>
 <form th:action="@{/logout}" th:method="POST">
     <input type="submit" value="Выйти из учётной записи"/>
 </form>
+
 
 </body>
 </html>

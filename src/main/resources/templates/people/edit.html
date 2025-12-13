@@ -23,6 +23,7 @@
     <input type="text" th:field="*{role}" id="role"/>
     <div style="color:red" th:if="${#fields.hasErrors('role')}" th:errors="*{role}">Role error</div>
     <br/>
+    <br/>
     <input type="submit" value="Редактировать"/>
 </form>
 

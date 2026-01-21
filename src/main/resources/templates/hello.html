@@ -6,15 +6,9 @@
 </head>
 <body>
 
-<p>
-    Здравствуйте,
-    <span th:if="${#authorization.expression('hasRole(''ADMIN'')')}">администратор</span>
-    <span th:if="${#authorization.expression('hasRole(''USER'')')}">пользователь</span>
-    <span th:text="${person.name}">Имя</span>
-</p>
+<p>Здравствуйте, <span th:text="${person.name}">Имя</span></p>
 <hr/>
 <br/>
-
 <form th:action="@{/books}" th:method="GET">
     <input type="submit" value="Список книг"/>
 </form>

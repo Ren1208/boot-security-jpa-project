@@ -82,5 +82,4 @@ public class PeopleService {
         return peopleRepository.findByName(name);
     }
 
-
 }

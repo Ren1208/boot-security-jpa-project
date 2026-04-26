@@ -34,35 +34,24 @@ public class AdminController {
         return "/become-admin";
     }
 
-    @PostMapping("/became-admin")
-        public String becomeAdmin(@ModelAttribute("secretPassword") String secretPassword,
-                                  Model model) {
-            if (secretPassword.equals("admin123")) {
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-                if (isAuthenticated(authentication)) {
-                    PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
-                    Person person = personDetails.getPerson();
-
-                    peopleService.updateUserRole(person, "ROLE_ADMIN");
-
-                    PersonDetails updatedPersonDetails = new PersonDetails(person);
-
-                    SecurityContextHolder.getContext().setAuthentication(
-                            new UsernamePasswordAuthenticationToken(
-                                    updatedPersonDetails,
-                                    authentication.getCredentials(),
-                                    updatedPersonDetails.getAuthorities()
-                            )
-                    );
-                }
-                return "redirect:/hello";
-            }
-
-        else {
+    @PostMapping("/become-admin")
+    public String becomeAdmin(@ModelAttribute("secretPassword") String secretPassword, Model model) {
+        if (secretPassword.equals("admin123")) {
+            return changeRole("ROLE_ADMIN");
+        } else {
             model.addAttribute("error", "Неверный секретный пароль");
             return "/become-admin";
         }
+    }
+
+    @GetMapping("/remove-admin")
+    public String showRemoveAdminPage() {
+        return "/remove-admin";
+    }
+
+    @PostMapping("/remove-admin")
+    public String removeAdmin() {
+        return changeRole("ROLE_USER");
     }
 
     private boolean isAuthenticated(Authentication authentication) {
@@ -70,5 +59,27 @@ public class AdminController {
                 && authentication.isAuthenticated()
                 && !(authentication.getPrincipal() instanceof String)
                 && authentication.getPrincipal() instanceof PersonDetails;
+    }
+
+    private String changeRole(String role) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (isAuthenticated(authentication)) {
+            PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
+            Person person = personDetails.getPerson();
+
+            peopleService.updateUserRole(person, role);
+
+            PersonDetails updatedPersonDetails = new PersonDetails(person);
+
+            SecurityContextHolder.getContext().setAuthentication(
+                    new UsernamePasswordAuthenticationToken(
+                            updatedPersonDetails,
+                            authentication.getCredentials(),
+                            updatedPersonDetails.getAuthorities()
+                    )
+            );
+        }
+        return "redirect:/hello";
     }
 }

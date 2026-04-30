@@ -26,9 +26,16 @@
 </form>
 <br/>
 
-<div sec:authorize="hasRole('USER')">
-    <form th:action="@{/become-admin}" th:method="GET">
-        <input type="submit" value="Стать администратором"/>
+<div sec:authorize="hasRole('SUPER_ADMIN')">
+    <form th:action="@{/setAdmin}" th:method="GET">
+        <input type="submit" value="Назначить администратора"/>
+    </form>
+    <br/>
+</div>
+
+<div sec:authorize="hasRole('SUPER_ADMIN')">
+    <form th:action="@{/removeAdmin}" th:method="GET">
+        <input type="submit" value="Лишить прав администратора"/>
     </form>
     <br/>
 </div>

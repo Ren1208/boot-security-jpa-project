@@ -9,10 +9,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Artyom Semenchenko
@@ -24,62 +24,42 @@ public class AdminController {
 
     private final PeopleService peopleService;
 
-    @Autowired
     public AdminController(PeopleService peopleService) {
         this.peopleService = peopleService;
     }
 
-    @GetMapping("/become-admin")
-    public String showBecomeAdminPage() {
-        return "/become-admin";
+    @GetMapping("/setAdmin")
+    public String showSetAdminPage(Model model) {
+        List<Person> users = peopleService.findAll().stream()
+                .filter(p -> "ROLE_USER".equals(p.getRole()))
+                .collect(Collectors.toList());
+        model.addAttribute("people", users);
+        return "/setAdmin";
     }
 
-    @PostMapping("/become-admin")
-    public String becomeAdmin(@ModelAttribute("secretPassword") String secretPassword, Model model) {
-        if (secretPassword.equals("admin123")) {
-            return changeRole("ROLE_ADMIN");
-        } else {
-            model.addAttribute("error", "Неверный секретный пароль");
-            return "/become-admin";
-        }
-    }
-
-    @GetMapping("/remove-admin")
-    public String showRemoveAdminPage() {
-        return "/remove-admin";
-    }
-
-    @PostMapping("/remove-admin")
-    public String removeAdmin() {
-        return changeRole("ROLE_USER");
-    }
-
-    private boolean isAuthenticated(Authentication authentication) {
-        return authentication != null
-                && authentication.isAuthenticated()
-                && !(authentication.getPrincipal() instanceof String)
-                && authentication.getPrincipal() instanceof PersonDetails;
-    }
-
-    private String changeRole(String role) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (isAuthenticated(authentication)) {
-            PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
-            Person person = personDetails.getPerson();
-
-            peopleService.updateUserRole(person, role);
-
-            PersonDetails updatedPersonDetails = new PersonDetails(person);
-
-            SecurityContextHolder.getContext().setAuthentication(
-                    new UsernamePasswordAuthenticationToken(
-                            updatedPersonDetails,
-                            authentication.getCredentials(),
-                            updatedPersonDetails.getAuthorities()
-                    )
-            );
-        }
+    @PostMapping("/setAdmin")
+    public String setAdmin(@RequestParam("personId") int personId) {
+        Person existingPerson = peopleService.findOne(personId);
+        existingPerson.setRole("ROLE_ADMIN");
+        peopleService.save(existingPerson);
         return "redirect:/hello";
     }
+
+    @GetMapping("/removeAdmin")
+    public String showRemoveAdminPage(Model model) {
+        List<Person> users = peopleService.findAll().stream()
+                .filter(p -> "ROLE_ADMIN".equals(p.getRole()))
+                .collect(Collectors.toList());
+        model.addAttribute("people", users);
+        return "/removeAdmin";
+    }
+
+    @PostMapping("/removeAdmin")
+    public String removeAdmin(@RequestParam("personId") int personId) {
+        Person existingPerson = peopleService.findOne(personId);
+        existingPerson.setRole("ROLE_USER");
+        peopleService.save(existingPerson);
+        return "redirect:/hello";
+    }
+
 }

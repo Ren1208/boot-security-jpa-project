@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Лишение прав администратора</title>
+</head>
+<body>
+<h2>Лишить прав администратора</h2>
+
+
+<div th:if="${not #lists.isEmpty(people)}">
+    <form th:method="POST" th:action="@{/removeAdmin}">
+        <label for="person">Выберите человека:</label>
+        <select name="personId" id="person">
+            <option th:each="p : ${people}"
+                    th:value="${p.personId}"
+                    th:text="${p.name}"></option>
+        </select>
+        <br/>
+        <br/>
+        <hr/>
+        <input type="submit" value="Лишить прав администратора"/>
+    </form>
+</div>
+
+<div th:if="${#lists.isEmpty(people)}">
+    <p style="color: orange;">Нет доступных администраторов для лишения прав</p>
+</div>
+
+<br/>
+
+<a th:href="@{/hello}">
+    <button type="button">Вернуться на главную</button>
+</a>
+</body>
+</html>

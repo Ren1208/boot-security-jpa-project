@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Назначить администратора</title>
+</head>
+<body>
+<h2>Назначить администратора</h2>
+
+
+<div th:if="${not #lists.isEmpty(people)}">
+    <form th:method="POST" th:action="@{/setAdmin}">
+        <label for="person">Выберите человека:</label>
+        <select name="personId" id="person">
+            <option th:each="p : ${people}"
+                    th:value="${p.personId}"
+                    th:text="${p.name}"></option>
+        </select>
+        <br/>
+        <br/>
+        <hr/>
+        <input type="submit" value="Назначить администратора"/>
+    </form>
+</div>
+
+<div th:if="${#lists.isEmpty(people)}">
+    <p style="color: orange;">Нет доступных пользователей для назначения администратором</p>
+</div>
+
+<br/>
+
+<a th:href="@{/hello}">
+    <button type="button">Вернуться на главную</button>
+</a>
+</body>
+</html>

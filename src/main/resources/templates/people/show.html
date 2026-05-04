@@ -11,6 +11,7 @@
 <div th:if="${books.isEmpty()}">
     <p>Человек пока не взял ни одной книги</p>
     <hr/>
+    <br/>
 </div>
 
 <div th:if="${!books.isEmpty()}">
@@ -30,6 +31,7 @@
     <hr/>
 </div>
 
+<br/>
 <form th:method="GET" th:action="@{/people/{id}/edit(id=${person.getPersonId()})}">
     <input type="submit" value="Редактировать"/>
 </form>

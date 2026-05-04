@@ -14,7 +14,7 @@
 </form>
 <br/>
 
-<div sec:authorize="hasRole('ADMIN')">
+<div sec:authorize="hasAnyRole('ADMIN', 'SUPER_ADMIN')">
     <form th:action="@{/people}" th:method="GET">
         <input type="submit" value="Список людей"/>
     </form>

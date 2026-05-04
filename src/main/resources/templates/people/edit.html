@@ -19,10 +19,7 @@
     <div style="color:red" th:if="${#fields.hasErrors('yearOfBirth')}" th:errors="*{yearOfBirth}">YearOfBirth error</div>
     <br/>
     <br/>
-    <label for="role">Введите роль доступа (ROLE_USER, ROLE_LIBRARIAN, ROLE_ADMIN): </label>
-    <input type="text" th:field="*{role}" id="role"/>
-    <div style="color:red" th:if="${#fields.hasErrors('role')}" th:errors="*{role}">Role error</div>
-    <br/>
+    <hr/>
     <br/>
     <input type="submit" value="Редактировать"/>
 </form>

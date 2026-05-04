@@ -9,7 +9,7 @@
 
 
 <div th:if="${not #lists.isEmpty(people)}">
-    <form th:method="POST" th:action="@{/removeAdmin}">
+    <form th:method="POST" th:action="@{/admin/removeAdmin}">
         <label for="person">Выберите человека:</label>
         <select name="personId" id="person">
             <option th:each="p : ${people}"

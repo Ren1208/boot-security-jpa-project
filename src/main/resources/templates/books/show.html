@@ -1,27 +1,33 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Информация о книге</title>
 </head>
 <body>
-<p th:text="${book.getName() + ', ' + book.getAuthor() + ', ' +
-book.getYearOfRelease()}">VALUE</p>
+<p th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYearOfRelease()}">VALUE</p>
 
-<div th:if="${owner}">
+<div sec:authorize="hasRole('USER')" th:if="${owner}">
+    <p>Книга занята другим пользователем.</p>
+</div>
+
+<div sec:authorize="hasAnyRole('ADMIN', 'SUPER_ADMIN')" th:if="${owner}">
     <span>Книга сейчас у: </span> <span th:text="${owner.getName()}">Person Name</span>
 
     <form th:method="PATCH" th:action="@{/books/{id}/release(id=${book.getBookId()})}">
         <br/>
-        <input type="submit" value="Освободить книгу"/>
+            <input type="submit" value="Освободить книгу"/>
+            <br/>
     </form>
-    <br/>
     <hr/>
     <br/>
 </div>
 
+<div sec:authorize="hasRole('USER')" th:if="${owner == null}">
+    <p>Книга свободна.</p>
+</div>
 
-<div th:if="${owner == null}">
+<div sec:authorize="hasAnyRole('ADMIN', 'SUPER_ADMIN')" th:if="${owner == null}">
     <hr/>
     <p>Эта книга свободна. Кому назначить её?</p>
 
@@ -39,7 +45,7 @@ book.getYearOfRelease()}">VALUE</p>
 </div>
 
 
-
+<div sec:authorize="hasAnyRole('ADMIN', 'SUPER_ADMIN')">
 <form th:method="GET" th:action="@{/books/{id}/edit(id=${book.getBookId()})}">
     <input type="submit" value="Редактировать"/>
 </form>
@@ -49,5 +55,6 @@ book.getYearOfRelease()}">VALUE</p>
 <form th:method="DELETE" th:action="@{/books/{id}(id=${book.getBookId()})}">
     <input type="submit" value="Удалить"/>
 </form>
+</div>
 </body>
 </html>

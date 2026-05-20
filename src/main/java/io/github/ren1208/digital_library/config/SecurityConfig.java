@@ -23,7 +23,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/login", "/auth/registration", "/error").permitAll()
-                        .anyRequest().hasAnyRole("USER", "ADMIN", "SUPER_ADMIN")
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/auth/login")

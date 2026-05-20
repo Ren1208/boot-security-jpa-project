@@ -81,8 +81,7 @@ public class BooksService {
                 book -> {
                     book.setOwner(selectedPerson);
                     book.setTakenAt(new Date());
-                }
-        );
+                });
     }
 
     public List<Book> findWithPagination(Integer page,

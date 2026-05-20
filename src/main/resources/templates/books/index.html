@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Список книг</title>
@@ -12,10 +12,14 @@
        book.getYearOfRelease()}">Book</a>
 </div>
 
-<br/>
-<hr/>
 
-<a href="/books/new">Добавить книгу</a>
+<div sec:authorize="hasAnyRole('ADMIN', 'SUPER_ADMIN')">
+    <br/>
+    <hr/>
+    <a href="/books/new">Добавить книгу</a>
+    <br/>
+</div>
+
 
 </body>
 </html>

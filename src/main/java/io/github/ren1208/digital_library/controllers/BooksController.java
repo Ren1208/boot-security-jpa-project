@@ -6,6 +6,7 @@ import io.github.ren1208.digital_library.services.BooksService;
 import io.github.ren1208.digital_library.services.PeopleService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -41,7 +42,7 @@ public class BooksController {
     }
 
     @GetMapping("/{id}")
-    public String show(@PathVariable("id") int id, Model model,
+    public String show(@PathVariable int id, Model model,
                        @ModelAttribute("person") Person person) {
         model.addAttribute("book", booksService.findOne(id));
 
@@ -56,11 +57,13 @@ public class BooksController {
     }
 
     @GetMapping("/new")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public String newBook(@ModelAttribute("book") Book book) {
         return "books/new";
     }
 
     @PostMapping()
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public String create(@ModelAttribute("book") @Valid Book book,
                          BindingResult bindingResult) {
         if (bindingResult.hasErrors())
@@ -71,16 +74,18 @@ public class BooksController {
     }
 
     @GetMapping("/{id}/edit")
-    public String edit(Model model, @PathVariable("id") int id) {
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    public String edit(Model model, @PathVariable int id) {
         model.addAttribute("book", booksService.findOne(id));
 
         return "books/edit";
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public String update(@ModelAttribute("book") @Valid Book book,
                          BindingResult bindingResult,
-                         @PathVariable("id") int id) {
+                         @PathVariable int id) {
         if (bindingResult.hasErrors())
             return "books/edit";
 
@@ -89,22 +94,23 @@ public class BooksController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") int id) {
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    public String delete(@PathVariable int id) {
         booksService.delete(id);
         return "redirect:/books";
     }
 
     @PatchMapping("/{id}/release")
-    public String release(@PathVariable("id") int id) {
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    public String release(@PathVariable int id) {
         booksService.release(id);
-
         return "redirect:/books/" + id;
     }
 
     @PatchMapping("/{id}/assign")
-    public String assign(@PathVariable("id") int id, @ModelAttribute("person") Person person) {
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    public String assign(@PathVariable int id, @ModelAttribute("person") Person person) {
         booksService.assign(id, person);
-
         return "redirect:/books/" + id;
     }
 

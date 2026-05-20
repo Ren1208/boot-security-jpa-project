@@ -1,6 +1,7 @@
 package io.github.ren1208.digital_library.controllers;
 
 import io.github.ren1208.digital_library.services.AdminService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/admin")
+@PreAuthorize("hasRole('SUPER_ADMIN')")
 public class AdminController {
 
     private final AdminService adminService;

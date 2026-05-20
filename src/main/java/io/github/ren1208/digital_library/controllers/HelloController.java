@@ -35,7 +35,10 @@ public class HelloController {
         if (isAuthenticated(authentication)) {
             PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
             Person person = personDetails.getPerson();
-            System.out.println(person);
+            System.out.println("Person ID: " + person.getPersonId());
+            System.out.println("Username: " + person.getName());
+            System.out.println("Role: " + person.getRole());
+            System.out.println("Books count: " + person.getBooks().size());
             model.addAttribute("person", person);
         }
 

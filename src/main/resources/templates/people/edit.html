@@ -25,5 +25,18 @@
     <input type="submit" value="Редактировать"/>
 </form>
 
+<br/>
+
+<a th:href="@{/people/{id}(id=${person.getPersonId()})}">
+    <button type="button">Назад</button>
+</a>
+
+<br/>
+<br/>
+
+<a th:href="@{/hello}">
+    <button type="button">В главное меню</button>
+</a>
+
 </body>
 </html>

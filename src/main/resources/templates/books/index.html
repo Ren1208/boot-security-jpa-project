@@ -16,10 +16,16 @@
 <div sec:authorize="hasAnyRole('ADMIN', 'SUPER_ADMIN')">
     <br/>
     <hr/>
-    <a href="/books/new">Добавить книгу</a>
+    <br/>
+    <form th:action="@{/books/new}" th:method="GET">
+        <input type="submit" value="Добавить книгу"/>
+    </form>
     <br/>
 </div>
 
+<a th:href="@{/hello}">
+    <button type="button">Назад</button>
+</a>
 
 </body>
 </html>

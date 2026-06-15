@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Show</title>
+    <title>Информация о человеке</title>
 </head>
 <body>
 <p th:text="${person.getName() + ', ' + person.getYearOfBirth()}">VALUE</p>
@@ -38,6 +38,19 @@
 <form th:method="DELETE" th:action="@{/people/{id}(id=${person.getPersonId()})}">
     <input type="submit" value="Удалить"/>
 </form>
+
+<br/>
+
+<a th:href="@{/people}">
+    <button type="button">Назад</button>
+</a>
+
+<br/>
+<br/>
+
+<a th:href="@{/hello}">
+    <button type="button">В главное меню</button>
+</a>
 
 </body>
 </html>

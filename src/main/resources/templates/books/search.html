@@ -2,15 +2,21 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Index</title>
+    <title>Поиск книги</title>
 </head>
 <body>
 
 <form th:method="PATCH" th:action="@{/books/search}">
-    <label for="query">Введите поисковой запрос: </label>
+    <label for="query">Поиск книги по названию: </label>
     <input type="text" id="query" name="query"/>
     <br/>
+    <br/>
+    <hr/>
+    <br/>
     <input type="submit" value="Искать!"/>
+    <br/>
+    <br/>
+    <hr/>
 </form>
 
 <div th:if="${books}">
@@ -18,18 +24,22 @@
         <span>Книг не найдено.</span>
     </div>
 
-    <div th:each="book : ${books}">
-        <p th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYearOfRelease()}">book</p>
+    <a>Список найденных книг:</a>
+    <br/>
+    <br/>
+    <div th:each="book, bookStat : ${books}" style="border-left: 4px solid #007bff; padding: 10px; margin-bottom: 15px; background-color: #f8f9fa; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <p style="margin: 0 0 5px 0;">
+            <b th:text="${bookStat.count + '. '}"></b>
+            <span th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYearOfRelease()}"></span>
+        </p>
 
-        <div th:if="${book.getOwner() != null}">
-            <span>Книга сейчас у: </span> <span th:text="${book.getOwner().getName()}">Person Name</span>
+        <div th:if="${book.getOwner() != null}" style="margin-top: 5px;">
+            <span>📖 Книга сейчас у: </span> <span th:text="${book.getOwner().getName()}">Person Name</span>
         </div>
 
-        <div th:if="${book.getOwner() == null}">
-            <span>Книга свободна</span>
+        <div th:if="${book.getOwner() == null}" style="margin-top: 5px;">
+            <span>✅ Книга свободна</span>
         </div>
-
-        <hr/>
     </div>
 </div>
 

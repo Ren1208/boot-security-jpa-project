@@ -12,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @author Artyom Semenchenko
  */
@@ -28,16 +30,19 @@ public class BooksController {
         this.booksService = booksService;
     }
 
-    @GetMapping()
-    public String index(Model model,
-                        @RequestParam(value = "page", required = false) Integer page,
-                        @RequestParam(value = "books_per_page", required = false) Integer numberOfBooksPerPage,
-                        @RequestParam(value = "sort_by_year", required = false) boolean sortedByYear) {
-        if (page == null || numberOfBooksPerPage == null)
-            model.addAttribute("books", booksService.findAll(sortedByYear));
-        else
-            model.addAttribute("books", booksService.findWithPagination(page,
-                    numberOfBooksPerPage, sortedByYear));
+    @GetMapping
+    public String getAllBooksOrSearch(@RequestParam(required = false) String query, Model model) {
+
+        if (query != null && !query.trim().isEmpty()) {
+            List<Book> foundBooks = booksService.searchByTitle(query);
+            model.addAttribute("books", foundBooks);
+            model.addAttribute("allBooks", false);
+        } else {
+            List<Book> allBooks = booksService.findAll();
+            model.addAttribute("books", allBooks);
+            model.addAttribute("allBooks", true);
+        }
+
         return "books/index";
     }
 
@@ -114,15 +119,5 @@ public class BooksController {
         return "redirect:/books/" + id;
     }
 
-    @GetMapping("/search")
-    public String searchPage() {
-        return "books/search";
-    }
-
-    @PatchMapping("/search")
-    public String makeSearch(Model model, @RequestParam("query") String query) {
-        model.addAttribute("books", booksService.searchByTitle(query));
-        return "books/search";
-    }
 
 }

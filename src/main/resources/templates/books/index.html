@@ -1,31 +1,158 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+
 <head>
     <meta charset="UTF-8">
-    <title>Список книг</title>
+    <title>Управление книгами</title>
+    <style>
+        .book-link {
+            text-decoration: none;
+            color: #007bff;
+        }
+        .book-link:hover {
+            text-decoration: underline;
+            color: #0056b3;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-form {
+            display: inline-block;
+        }
+
+        .all-books-form, .add-book-form, .back-form {
+            display: inline-block;
+        }
+
+        .search-btn, .all-books-btn, .add-book-btn, .back-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .search-btn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .search-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .all-books-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .all-books-btn:hover {
+            background-color: #1e7e34;
+        }
+
+        .add-book-btn {
+            background-color: #ffc107;
+            color: #333;
+        }
+
+        .add-book-btn:hover {
+            background-color: #e0a800;
+        }
+
+        .back-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .divider {
+            margin: 0 10px;
+            color: #6c757d;
+        }
+    </style>
 </head>
+
 <body>
-
-<div th:each="book : ${books}">
-    <a th:href="@{/books/{id}(id=${book.getBookId()})}"
-       th:text="${book.getName() + ', ' + book.getAuthor() + ', ' +
-       book.getYearOfRelease()}">Book</a>
-</div>
-
-
-<div sec:authorize="hasAnyRole('ADMIN', 'SUPER_ADMIN')">
-    <br/>
-    <hr/>
-    <br/>
-    <form th:action="@{/books/new}" th:method="GET">
-        <input type="submit" value="Добавить книгу"/>
+<div class="button-group">
+    <!-- Форма поиска -->
+    <form class="search-form" th:method="GET" th:action="@{/books}">
+        <label for="query">Поиск книги по названию: </label>
+        <input type="text" id="query" name="query" th:value="${param.query}"/>
+        <input class="search-btn" type="submit" value="Искать!"/>
     </form>
-    <br/>
+
+    <span class="divider">|</span>
+
+    <!-- Кнопка "Все книги" -->
+    <form class="all-books-form" th:method="GET" th:action="@{/books}">
+        <input class="all-books-btn" type="submit" value="📚 Все книги"/>
+    </form>
+
+    <!-- Кнопка "Добавить книгу" (только для ADMIN/SUPER_ADMIN) -->
+    <div sec:authorize="hasAnyRole('ADMIN', 'SUPER_ADMIN')">
+        <span class="divider">|</span>
+        <form class="add-book-form" th:method="GET" th:action="@{/books/new}">
+            <input class="add-book-btn" type="submit" value="➕ Добавить книгу"/>
+        </form>
+    </div>
+
+    <!-- Кнопка "Назад" -->
+    <span class="divider">|</span>
+    <form class="back-form" th:method="GET" th:action="@{/hello}">
+        <input class="back-btn" type="submit" value="← Назад"/>
+    </form>
 </div>
 
-<a th:href="@{/hello}">
-    <button type="button">Назад</button>
-</a>
+<hr/>
+
+<div th:if="${books}">
+    <div th:if="${books.isEmpty()}">
+        <span>Книг не найдено.</span>
+    </div>
+
+    <div th:unless="${books.isEmpty()}">
+        <a th:if="${allBooks == true}" style="font-weight: bold;">Список всех книг:</a>
+        <a th:if="${allBooks == false}" style="font-weight: bold;">Список найденных книг по названию:</a>
+        <br/>
+        <br/>
+    </div>
+
+    <div th:each="book, bookStat : ${books}" style="border-left: 4px solid #007bff; padding: 10px; margin-bottom: 15px; background-color: #f8f9fa; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <p style="margin: 0 0 5px 0;">
+            <b th:text="${bookStat.count + '. '}"></b>
+            <a th:href="@{/books/{id}(id=${book.getBookId()})}"
+               th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYearOfRelease()}"
+               class="book-link"
+               target="_blank"
+               rel="noopener noreferrer">
+            </a>
+        </p>
+
+        <div th:if="${book.getOwner() != null}" style="margin-top: 5px;">
+            <span>📖 Книга сейчас у: </span> <span th:text="${book.getOwner().getName()}">Person Name</span>
+        </div>
+
+        <div th:if="${book.getOwner() == null}" style="margin-top: 5px;">
+            <span>✅ Книга свободна</span>
+        </div>
+    </div>
+</div>
+
+<div th:if="${not #lists.isEmpty(books)}" style="margin-top: 20px;">
+    <hr/>
+    <div style="font-size: 12px; color: #6c757d;">
+        Всего книг: <span th:text="${#lists.size(books)}"></span>
+    </div>
+</div>
 
 </body>
 </html>

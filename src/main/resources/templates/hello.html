@@ -10,13 +10,13 @@
 <hr/>
 <br/>
 <form th:action="@{/books}" th:method="GET">
-    <input type="submit" value="Список книг"/>
+    <input type="submit" value="Поиск книг"/>
 </form>
 <br/>
 
 <div sec:authorize="hasAnyRole('ADMIN', 'SUPER_ADMIN')">
     <form th:action="@{/people}" th:method="GET">
-        <input type="submit" value="Список людей"/>
+        <input type="submit" value="Список всех людей"/>
     </form>
     <br/>
 </div>

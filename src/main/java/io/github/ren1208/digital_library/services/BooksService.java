@@ -34,6 +34,10 @@ public class BooksService {
             return booksRepository.findAll();
     }
 
+    public List<Book> findAll() {
+        return booksRepository.findAll();
+    }
+
     public Book findOne(int id) {
         return booksRepository.findById(id).orElse(null);
     }
@@ -97,5 +101,6 @@ public class BooksService {
     public List<Book> searchByTitle(String name) {
         return booksRepository.findByNameStartingWith(name);
     }
+
 
 }

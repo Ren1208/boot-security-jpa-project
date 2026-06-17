@@ -83,7 +83,7 @@
 
 <body>
 <div class="button-group">
-    <!-- Форма поиска -->
+
     <form class="search-form" th:method="GET" th:action="@{/books}">
         <label for="query">Поиск книги по названию: </label>
         <input type="text" id="query" name="query" th:value="${param.query}"/>
@@ -92,12 +92,10 @@
 
     <span class="divider">|</span>
 
-    <!-- Кнопка "Все книги" -->
     <form class="all-books-form" th:method="GET" th:action="@{/books}">
         <input class="all-books-btn" type="submit" value="📚 Все книги"/>
     </form>
 
-    <!-- Кнопка "Добавить книгу" (только для ADMIN/SUPER_ADMIN) -->
     <div sec:authorize="hasAnyRole('ADMIN', 'SUPER_ADMIN')">
         <span class="divider">|</span>
         <form class="add-book-form" th:method="GET" th:action="@{/books/new}">
@@ -105,7 +103,6 @@
         </form>
     </div>
 
-    <!-- Кнопка "Назад" -->
     <span class="divider">|</span>
     <form class="back-form" th:method="GET" th:action="@{/hello}">
         <input class="back-btn" type="submit" value="← Назад"/>
@@ -131,9 +128,7 @@
             <b th:text="${bookStat.count + '. '}"></b>
             <a th:href="@{/books/{id}(id=${book.getBookId()})}"
                th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYearOfRelease()}"
-               class="book-link"
-               target="_blank"
-               rel="noopener noreferrer">
+               class="book-link">
             </a>
         </p>
 

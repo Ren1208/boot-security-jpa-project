@@ -3,42 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <title>Изменение книги</title>
+    <style>
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .back-form {
+            display: inline-block;
+        }
+
+        .back-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .home-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .home-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .divider {
+            margin: 0 10px;
+            color: #6c757d;
+        }
+
+        .form-container {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+
+        .form-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ffc107;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .form-group input:focus {
+            border-color: #ffc107;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.25);
+        }
+
+        .form-group input:hover {
+            border-color: #e0a800;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 13px;
+            margin-top: 5px;
+            padding: 5px 10px;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+        }
+
+        .submit-btn {
+            background-color: #ffc107;
+            color: #333;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        .submit-btn:hover {
+            background-color: #e0a800;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .action-btn.back {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .action-btn.back:hover {
+            background-color: #5a6268;
+        }
+
+        .book-preview {
+            background-color: white;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007bff;
+        }
+
+        .book-preview-label {
+            font-weight: bold;
+            color: #6c757d;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .book-preview-text {
+            font-size: 16px;
+            color: #333;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #dee2e6;
+            margin: 20px 0;
+        }
+    </style>
 </head>
 <body>
 
-<form th:method="PATCH" th:action="@{/books/{id}(id=${book.getBookId()})}" th:object="${book}">
-    <label for="name">Введите название книги: </label>
-    <input type="text" th:field="*{name}" id="name"/>
-    <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</div>
-    <br/>
-    <br/>
-    <label for="author">Введите автора: </label>
-    <input type="text" th:field="*{author}" id="author"/>
-    <div style="color:red" th:if="${#fields.hasErrors('author')}" th:errors="*{author}">Author error</div>
-    <br/>
-    <br/>
-    <label for="yearOfRelease">Введите год выпуска: </label>
-    <input type="text" th:field="*{yearOfRelease}" id="yearOfRelease"/>
-    <div style="color:red" th:if="${#fields.hasErrors('yearOfRelease')}" th:errors="*{yearOfRelease}">YearOfRelease error</div>
-    <br/>
-    <br/>
-    <hr/>
-    <br/>
-    <input type="submit" value="Редактировать"/>
-</form>
+<div class="button-group">
+    <a th:href="@{/books}" style="text-decoration: none;">
+        <button type="button" class="back-btn">← К списку книг</button>
+    </a>
 
-<br/>
+    <span class="divider">|</span>
 
-<a th:href="@{/books/{id}(id=${book.getBookId()})}">
-    <button type="button">Назад</button>
-</a>
+    <form class="back-form" th:method="GET" th:action="@{/hello}">
+        <input class="home-btn" type="submit" value="🏠 В главное меню"/>
+    </form>
+</div>
 
-<br/>
-<br/>
+<hr/>
 
-<a th:href="@{/hello}">
-    <button type="button">В главное меню</button>
-</a>
+<div class="form-container">
+    <div class="form-title">✏️ Редактирование книги</div>
+
+    <div class="book-preview">
+        <span class="book-preview-label">📖 Текущие данные:</span>
+        <span class="book-preview-text" th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYearOfRelease()}">
+            Название, Автор, Год
+        </span>
+    </div>
+
+    <form th:method="PATCH" th:action="@{/books/{id}(id=${book.getBookId()})}" th:object="${book}">
+        <div class="form-group">
+            <label for="name">📖 Название книги:</label>
+            <input type="text" th:field="*{name}" id="name" placeholder="Введите название книги"/>
+            <div class="error-message" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</div>
+        </div>
+
+        <div class="form-group">
+            <label for="author">✍️ Автор:</label>
+            <input type="text" th:field="*{author}" id="author" placeholder="Введите автора"/>
+            <div class="error-message" th:if="${#fields.hasErrors('author')}" th:errors="*{author}">Author error</div>
+        </div>
+
+        <div class="form-group">
+            <label for="yearOfRelease">📅 Год выпуска:</label>
+            <input type="text" th:field="*{yearOfRelease}" id="yearOfRelease" placeholder="Введите год выпуска"/>
+            <div class="error-message" th:if="${#fields.hasErrors('yearOfRelease')}" th:errors="*{yearOfRelease}">YearOfRelease error</div>
+        </div>
+
+        <hr/>
+
+        <div class="form-actions">
+            <input class="submit-btn" type="submit" value="💾 Сохранить изменения"/>
+
+            <span class="divider">|</span>
+
+            <a th:href="@{/books/{id}(id=${book.getBookId()})}" style="text-decoration: none;">
+                <button type="button" class="action-btn back">← Назад к книге</button>
+            </a>
+        </div>
+    </form>
+</div>
 
 </body>
 </html>

@@ -1,39 +1,226 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Лишение прав администратора</title>
+    <style>
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .back-form {
+            display: inline-block;
+        }
+
+        .home-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .home-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .divider {
+            margin: 0 10px;
+            color: #6c757d;
+        }
+
+        .form-container {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+
+        .form-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ffc107;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+            background-color: white;
+            cursor: pointer;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .form-group select:focus {
+            border-color: #ffc107;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.25);
+        }
+
+        .form-group select:hover {
+            border-color: #e0a800;
+        }
+
+        .info-message {
+            color: #856404;
+            font-size: 16px;
+            padding: 15px;
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+
+        .submit-btn {
+            background-color: #ffc107;
+            color: #333;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        .submit-btn:hover {
+            background-color: #e0a800;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .action-btn.home {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .action-btn.home:hover {
+            background-color: #0056b3;
+        }
+
+        .empty-message {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+            text-align: center;
+        }
+
+        .empty-message-icon {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .empty-message-text {
+            font-size: 18px;
+            color: #856404;
+            font-weight: bold;
+        }
+
+        .empty-message-subtext {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #dee2e6;
+            margin: 20px 0;
+        }
+    </style>
 </head>
 <body>
-<h2>Лишить прав администратора</h2>
 
-
-<div th:if="${not #lists.isEmpty(people)}">
-    <form th:method="POST" th:action="@{/admin/removeAdmin}">
-        <label for="person">Выберите человека:</label>
-        <select name="personId" id="person">
-            <option th:each="p : ${people}"
-                    th:value="${p.personId}"
-                    th:text="${p.name}"></option>
-        </select>
-        <br/>
-        <br/>
-        <hr/>
-        <br/>
-        <input type="submit" value="Лишить прав администратора"/>
+<div class="button-group">
+    <form class="back-form" th:method="GET" th:action="@{/hello}">
+        <input class="home-btn" type="submit" value="🏠 В главное меню"/>
     </form>
 </div>
 
-<div th:if="${#lists.isEmpty(people)}">
-    <p style="color: orange;">Нет доступных администраторов для лишения прав</p>
+<hr/>
+
+<div class="form-container">
+    <div class="form-title">🔽 Лишение прав администратора</div>
+
+    <div th:if="${not #lists.isEmpty(people)}">
+        <div class="info-message">
+            ⚠️ Внимание: Вы собираетесь лишить прав администратора выбранного пользователя.
+        </div>
+
+        <form th:method="POST" th:action="@{/admin/removeAdmin}">
+            <div class="form-group">
+                <label for="person">👤 Выберите администратора:</label>
+                <select name="personId" id="person">
+                    <option th:each="p : ${people}"
+                            th:value="${p.personId}"
+                            th:text="${p.name}"></option>
+                </select>
+            </div>
+
+            <hr/>
+
+            <div class="form-actions">
+                <input class="submit-btn" type="submit" value="🔽 Лишить прав администратора"/>
+            </div>
+        </form>
+    </div>
+
+    <div th:if="${#lists.isEmpty(people)}">
+        <div class="empty-message">
+            <span class="empty-message-icon">ℹ️</span>
+            <div class="empty-message-text">Нет администраторов для лишения прав</div>
+            <div class="empty-message-subtext">На данный момент нет пользователей с правами администратора</div>
+        </div>
+
+        <hr/>
+    </div>
 </div>
 
-<br/>
-<hr/>
-<br/>
-
-<a th:href="@{/hello}">
-    <button type="button">Вернуться на главную</button>
-</a>
 </body>
 </html>

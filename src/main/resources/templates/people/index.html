@@ -3,24 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <title>Список людей</title>
+    <style>
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .back-form {
+            display: inline-block;
+        }
+
+        .home-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .home-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .divider {
+            margin: 0 10px;
+            color: #6c757d;
+        }
+
+        .person-link {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .person-link:hover {
+            text-decoration: underline;
+            color: #0056b3;
+        }
+
+        .list-container {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 20px 0;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .list-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #17a2b8;
+        }
+
+        .person-item {
+            border-left: 4px solid #17a2b8;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .person-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .person-item a {
+            font-size: 16px;
+        }
+
+        .person-item .person-id {
+            font-weight: bold;
+            color: #17a2b8;
+            margin-right: 10px;
+        }
+
+        .empty-message {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+            text-align: center;
+        }
+
+        .empty-message-icon {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .empty-message-text {
+            font-size: 18px;
+            color: #856404;
+            font-weight: bold;
+        }
+
+        .empty-message-subtext {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .action-btn.home {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .action-btn.home:hover {
+            background-color: #0056b3;
+        }
+
+        .list-footer {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #dee2e6;
+            margin: 20px 0;
+        }
+    </style>
 </head>
 <body>
 
-<div th:each="person : ${people}">
-    <a th:href="@{/people/{id}(id=${person.getPersonId()})}"
-       th:text="${person.getName() + ', ' + person.getYearOfBirth()}">user</a>
-    <br/>
+<div class="button-group">
+    <form class="back-form" th:method="GET" th:action="@{/hello}">
+        <input class="home-btn" type="submit" value="🏠 В главное меню"/>
+    </form>
 </div>
-
-<br/>
 
 <hr/>
 
-<br/>
+<div class="list-container">
+    <div class="list-title">👥 Список людей</div>
 
-<a th:href="@{/hello}">
-    <button type="button">Назад</button>
-</a>
+    <div th:if="${not #lists.isEmpty(people)}">
+        <div th:each="person : ${people}" class="person-item">
+            <span class="person-id" th:text="'#' + ${personStat.count}"></span>
+            <a th:href="@{/people/{id}(id=${person.getPersonId()})}"
+               th:text="${person.getName() + ', ' + person.getYearOfBirth()}"
+               class="person-link">
+                Имя, Год рождения
+            </a>
+        </div>
+
+        <hr/>
+
+        <div class="list-footer">
+            <span style="font-size: 14px; color: #6c757d;">
+                Всего людей: <span th:text="${#lists.size(people)}"></span>
+            </span>
+        </div>
+    </div>
+
+    <div th:if="${#lists.isEmpty(people)}">
+        <div class="empty-message">
+            <span class="empty-message-icon">ℹ️</span>
+            <div class="empty-message-text">Список людей пуст</div>
+            <div class="empty-message-subtext">На данный момент нет зарегистрированных пользователей</div>
+        </div>
+
+    </div>
+</div>
 
 </body>
 </html>

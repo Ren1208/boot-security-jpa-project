@@ -95,7 +95,7 @@ public class BooksController {
             return "books/edit";
 
         booksService.update(id, book);
-        return "redirect:/books";
+        return "redirect:/books/{id}";
     }
 
     @DeleteMapping("/{id}")

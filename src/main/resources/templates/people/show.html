@@ -4,53 +4,221 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Информация о человеке</title>
+    <style>
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .back-form {
+            display: inline-block;
+        }
+
+        .back-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .divider {
+            margin: 0 10px;
+            color: #6c757d;
+        }
+
+        .home-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .home-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .person-info-container {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+
+        .person-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #007bff;
+        }
+
+        .person-details {
+            font-size: 18px;
+            color: #333;
+            padding: 15px;
+            background-color: white;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            background-color: white;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+        }
+
+        .info-box.empty {
+            border-left-color: #6c757d;
+        }
+
+        .info-box.has-books {
+            border-left-color: #28a745;
+        }
+
+        .books-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .books-list li {
+            padding: 10px 15px;
+            margin: 5px 0;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border-left: 3px solid #007bff;
+            font-size: 16px;
+        }
+
+        .books-list li.expired {
+            border-left-color: #dc3545;
+            color: #dc3545;
+            background-color: #f8d7da;
+        }
+
+        .empty-message {
+            font-size: 16px;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px 5px 5px 0;
+            transition: background-color 0.2s;
+        }
+
+        .action-btn.edit {
+            background-color: #ffc107;
+            color: #333;
+        }
+
+        .action-btn.edit:hover {
+            background-color: #e0a800;
+        }
+
+        .action-btn.delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .action-btn.delete:hover {
+            background-color: #c82333;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .action-form {
+            display: inline-block;
+            margin: 5px 5px 5px 0;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #dee2e6;
+            margin: 20px 0;
+        }
+    </style>
 </head>
 <body>
-<p th:text="${person.getName() + ', ' + person.getYearOfBirth()}">VALUE</p>
 
-<div th:if="${books.isEmpty()}">
-    <p>Человек пока не взял ни одной книги</p>
-    <hr/>
+<div class="button-group">
+    <a th:href="@{/people}" style="text-decoration: none;">
+        <button type="button" class="back-btn">← К списку людей</button>
+    </a>
+
+    <span class="divider">|</span>
+
+    <form class="back-form" th:method="GET" th:action="@{/hello}">
+        <input class="home-btn" type="submit" value="🏠 В главное меню"/>
+    </form>
 </div>
 
-<div th:if="${!books.isEmpty()}">
-    <hr/>
-    <b>Книги:</b>
-    <br/>
-    <table th:each="book : ${books}">
-        <tr>
-            <td>
-                <span th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYearOfRelease()}"
-                      th:style="${book.isExpired()} ? 'color: red' : 'color: black'">
-                    book
-                </span>
-            </td>
-        </tr>
-    </table>
-    <hr/>
+<hr/>
+
+<div class="person-info-container">
+    <div class="person-title">👤 Информация о человеке</div>
+
+    <div class="person-details">
+        <span th:text="${person.getName() + ', ' + person.getYearOfBirth()}">ФИО, Год рождения</span>
+    </div>
+
+    <div th:if="${books.isEmpty()}" class="info-box empty">
+        <div class="empty-message">📚 Человек пока не взял ни одной книги</div>
+    </div>
+
+    <div th:if="${!books.isEmpty()}" class="info-box has-books">
+        <p style="font-weight: bold; color: #28a745; margin-bottom: 15px;">📚 Книги на руках:</p>
+        <ul class="books-list">
+            <li th:each="book : ${books}" th:classappend="${book.isExpired()} ? 'expired'">
+                <span th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYearOfRelease()}">book</span>
+                <span th:if="${book.isExpired()}" style="font-weight: bold;"> ⚠️ просрочена</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="button-container">
+        <form class="action-form" th:method="GET" th:action="@{/people/{id}/edit(id=${person.getPersonId()})}">
+            <input class="action-btn edit" type="submit" value="✏️ Редактировать"/>
+        </form>
+
+        <form class="action-form" th:method="DELETE" th:action="@{/people/{id}(id=${person.getPersonId()})}">
+            <input class="action-btn delete" type="submit" value="🗑️ Удалить" onclick="return confirm('Вы уверены, что хотите удалить этого человека?');"/>
+        </form>
+    </div>
 </div>
-
-<br/>
-<form th:method="GET" th:action="@{/people/{id}/edit(id=${person.getPersonId()})}">
-    <input type="submit" value="Редактировать"/>
-</form>
-<br/>
-<form th:method="DELETE" th:action="@{/people/{id}(id=${person.getPersonId()})}">
-    <input type="submit" value="Удалить"/>
-</form>
-
-<br/>
-
-<a th:href="@{/people}">
-    <button type="button">Назад</button>
-</a>
-
-<br/>
-<br/>
-
-<a th:href="@{/hello}">
-    <button type="button">В главное меню</button>
-</a>
 
 </body>
 </html>

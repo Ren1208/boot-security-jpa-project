@@ -5,15 +5,6 @@
     <meta charset="UTF-8">
     <title>Управление книгами</title>
     <style>
-        .book-link {
-            text-decoration: none;
-            color: #007bff;
-        }
-        .book-link:hover {
-            text-decoration: underline;
-            color: #0056b3;
-        }
-
         .button-group {
             display: flex;
             gap: 15px;
@@ -36,15 +27,16 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 14px;
+            transition: background-color 0.2s;
         }
 
         .search-btn {
-            background-color: #007bff;
+            background-color: #17a2b8;
             color: white;
         }
 
         .search-btn:hover {
-            background-color: #0056b3;
+            background-color: #117a8b;
         }
 
         .all-books-btn {
@@ -66,17 +58,126 @@
         }
 
         .back-btn {
-            background-color: #6c757d;
+            background-color: #007bff;
             color: white;
         }
 
         .back-btn:hover {
-            background-color: #5a6268;
+            background-color: #0056b3;
         }
 
         .divider {
             margin: 0 10px;
             color: #6c757d;
+        }
+
+        .book-link {
+            text-decoration: none;
+            color: #17a2b8;
+            font-size: 16px;
+        }
+
+        .book-link:hover {
+            text-decoration: underline;
+            color: #117a8b;
+        }
+
+        .list-container {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 700px;
+            margin: 20px 0;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .list-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #17a2b8;
+        }
+
+        .book-item {
+            border-left: 4px solid #17a2b8;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .book-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .book-item .book-index {
+            font-weight: bold;
+            color: #17a2b8;
+            margin-right: 10px;
+        }
+
+        .book-status {
+            margin-top: 6px;
+            font-size: 14px;
+        }
+
+        .book-status.available {
+            color: #28a745;
+        }
+
+        .book-status.owned {
+            color: #6c757d;
+        }
+
+        .empty-message {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 700px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+            text-align: center;
+        }
+
+        .empty-message-icon {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .empty-message-text {
+            font-size: 18px;
+            color: #856404;
+            font-weight: bold;
+        }
+
+        .empty-message-subtext {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+
+        .list-footer {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #dee2e6;
+            margin: 20px 0;
         }
     </style>
 </head>
@@ -105,47 +206,48 @@
 
     <span class="divider">|</span>
     <form class="back-form" th:method="GET" th:action="@{/hello}">
-        <input class="back-btn" type="submit" value="← Назад"/>
+        <input class="back-btn" type="submit" value="🏠 В главное меню"/>
     </form>
 </div>
 
 <hr/>
 
-<div th:if="${books}">
+<div class="list-container" th:if="${books}">
+    <div class="list-title">
+        <a th:if="${allBooks == true}">📚 Список всех книг</a>
+        <a th:if="${allBooks == false}">🔍 Найденные книги по названию</a>
+    </div>
+
     <div th:if="${books.isEmpty()}">
-        <span>Книг не найдено.</span>
+        <div class="empty-message">
+            <span class="empty-message-icon">ℹ️</span>
+            <div class="empty-message-text">Книг не найдено</div>
+            <div class="empty-message-subtext">Попробуйте изменить условия поиска</div>
+        </div>
     </div>
 
     <div th:unless="${books.isEmpty()}">
-        <a th:if="${allBooks == true}" style="font-weight: bold;">Список всех книг:</a>
-        <a th:if="${allBooks == false}" style="font-weight: bold;">Список найденных книг по названию:</a>
-        <br/>
-        <br/>
-    </div>
-
-    <div th:each="book, bookStat : ${books}" style="border-left: 4px solid #007bff; padding: 10px; margin-bottom: 15px; background-color: #f8f9fa; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <p style="margin: 0 0 5px 0;">
-            <b th:text="${bookStat.count + '. '}"></b>
+        <div th:each="book : ${books}" class="book-item">
+            <span class="book-index" th:text="'#' + ${bookStat.count}"></span>
             <a th:href="@{/books/{id}(id=${book.getBookId()})}"
                th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYearOfRelease()}"
                class="book-link">
             </a>
-        </p>
 
-        <div th:if="${book.getOwner() != null}" style="margin-top: 5px;">
-            <span>📖 Книга сейчас у: </span> <span th:text="${book.getOwner().getName()}">Person Name</span>
+            <div th:if="${book.getOwner() != null}" class="book-status owned">
+                📖 Книга сейчас у: <span th:text="${book.getOwner().getName()}">Person Name</span>
+            </div>
+
+            <div th:if="${book.getOwner() == null}" class="book-status available">
+                ✅ Книга свободна
+            </div>
         </div>
 
-        <div th:if="${book.getOwner() == null}" style="margin-top: 5px;">
-            <span>✅ Книга свободна</span>
-        </div>
-    </div>
-</div>
+        <hr/>
 
-<div th:if="${not #lists.isEmpty(books)}" style="margin-top: 20px;">
-    <hr/>
-    <div style="font-size: 12px; color: #6c757d;">
-        Всего книг: <span th:text="${#lists.size(books)}"></span>
+        <div class="list-footer">
+            Всего книг: <span th:text="${#lists.size(books)}"></span>
+        </div>
     </div>
 </div>
 

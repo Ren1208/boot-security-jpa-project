@@ -61,7 +61,7 @@ public class PeopleController {
             return "people/edit";
 
         peopleService.update(id, person);
-        return "redirect:/people";
+        return "redirect:/people/{id}";
     }
 
     @DeleteMapping("/{id}")

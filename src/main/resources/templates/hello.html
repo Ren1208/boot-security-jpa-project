@@ -1,49 +1,189 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Главное меню</title>
+    <style>
+        .home-container {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+
+        .home-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #007bff;
+        }
+
+        .greeting {
+            font-size: 18px;
+            color: #333;
+            padding: 15px;
+            background-color: white;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #28a745;
+        }
+
+        .greeting-name {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .menu-section {
+            margin: 20px 0;
+        }
+
+        .menu-section-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #6c757d;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .action-form {
+            display: block;
+            margin: 10px 0;
+        }
+
+        .menu-btn {
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: left;
+            transition: background-color 0.2s;
+        }
+
+        .menu-btn.primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .menu-btn.primary:hover {
+            background-color: #0056b3;
+        }
+
+        .menu-btn.secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .menu-btn.secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .menu-btn.info {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .menu-btn.info:hover {
+            background-color: #138496;
+        }
+
+        .menu-btn.warning {
+            background-color: #ffc107;
+            color: #333;
+        }
+
+        .menu-btn.warning:hover {
+            background-color: #e0a800;
+        }
+
+        .menu-btn.danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .menu-btn.danger:hover {
+            background-color: #c82333;
+        }
+
+        .menu-btn.success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .menu-btn.success:hover {
+            background-color: #1e7e34;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #dee2e6;
+            margin: 20px 0;
+        }
+    </style>
 </head>
 <body>
 
-<p>Здравствуйте, <span th:text="${person.name}">Имя</span></p>
-<hr/>
-<br/>
-<form th:action="@{/books}" th:method="GET">
-    <input type="submit" value="Книги"/>
-</form>
-<br/>
+<div class="home-container">
+    <div class="home-title">🏠 Главное меню</div>
 
-<div sec:authorize="hasAnyRole('ADMIN', 'SUPER_ADMIN')">
-    <form th:action="@{/people}" th:method="GET">
-        <input type="submit" value="Список всех людей"/>
+    <div class="greeting">
+        👋 Здравствуйте, <span class="greeting-name" th:text="${person.name}">Имя</span>
+    </div>
+
+    <hr/>
+
+    <div class="menu-section">
+        <div class="menu-section-title">📚 Работа с книгами</div>
+        <form class="action-form" th:action="@{/books}" th:method="GET">
+            <input class="menu-btn primary" type="submit" value="📖 Книги"/>
+        </form>
+    </div>
+
+    <div sec:authorize="hasAnyRole('ADMIN', 'SUPER_ADMIN')">
+        <hr/>
+        <div class="menu-section">
+            <div class="menu-section-title">👥 Управление пользователями</div>
+            <form class="action-form" th:action="@{/people}" th:method="GET">
+                <input class="menu-btn secondary" type="submit" value="👤 Список всех людей"/>
+            </form>
+        </div>
+    </div>
+
+    <hr/>
+
+    <div class="menu-section">
+        <div class="menu-section-title">ℹ️ Прочее</div>
+        <form class="action-form" th:action="@{/showUserInfo}" th:method="GET">
+            <input class="menu-btn info" type="submit" value="🖥️ Вывести информацию о себе в консоль разработчика"/>
+        </form>
+    </div>
+
+    <div sec:authorize="hasRole('SUPER_ADMIN')">
+        <hr/>
+        <div class="menu-section">
+            <div class="menu-section-title">🛡️ Управление администраторами</div>
+            <form class="action-form" th:action="@{/admin/setAdmin}" th:method="GET">
+                <input class="menu-btn success" type="submit" value="⬆️ Назначить администратора"/>
+            </form>
+            <form class="action-form" th:action="@{/admin/removeAdmin}" th:method="GET">
+                <input class="menu-btn warning" type="submit" value="⬇️ Лишить прав администратора"/>
+            </form>
+        </div>
+    </div>
+
+    <hr/>
+
+    <form class="action-form" th:action="@{/logout}" th:method="POST">
+        <input class="menu-btn danger" type="submit" value="🚪 Выйти из учётной записи"/>
     </form>
-    <br/>
 </div>
-
-<form th:action="@{/showUserInfo}" th:method="GET">
-    <input type="submit" value="Вывести информацию о себе в консоль разработчика"/>
-</form>
-<br/>
-
-<div sec:authorize="hasRole('SUPER_ADMIN')">
-    <form th:action="@{/admin/setAdmin}" th:method="GET">
-        <input type="submit" value="Назначить администратора"/>
-    </form>
-    <br/>
-</div>
-
-<div sec:authorize="hasRole('SUPER_ADMIN')">
-    <form th:action="@{/admin/removeAdmin}" th:method="GET">
-        <input type="submit" value="Лишить прав администратора"/>
-    </form>
-    <br/>
-</div>
-
-<form th:action="@{/logout}" th:method="POST">
-    <input type="submit" value="Выйти из учётной записи"/>
-</form>
-
 
 </body>
 </html>

@@ -30,7 +30,7 @@ public class AdminController {
     @PostMapping("/setAdmin")
     public String setAdmin(@RequestParam("personId") int personId) {
         adminService.grantAdminRole(personId);
-        return "redirect:/hello";
+        return "redirect:/admin/setAdmin";
     }
 
     @GetMapping("/removeAdmin")
@@ -42,7 +42,7 @@ public class AdminController {
     @PostMapping("/removeAdmin")
     public String removeAdmin(@RequestParam("personId") int personId) {
         adminService.revokeAdminRole(personId);
-        return "redirect:/hello";
+        return "redirect:/admin/removeAdmin";
     }
 
 }

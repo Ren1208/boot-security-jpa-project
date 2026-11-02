@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Главное меню</title>
     <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
         .home-container {
             background-color: #f8f9fa;
             padding: 30px;
@@ -33,14 +35,22 @@
             border-left: 4px solid #28a745;
         }
 
-        .greeting-name {
-            color: #28a745;
+        .greeting-name { color: #28a745; font-weight: bold; }
+
+        .role-badge {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
             font-weight: bold;
         }
 
-        .menu-section {
-            margin: 20px 0;
-        }
+        .role-badge.super_admin { background-color: #6f42c1; color: white; }
+        .role-badge.admin { background-color: #dc3545; color: white; }
+        .role-badge.librarian { background-color: #17a2b8; color: white; }
+
+        .menu-section { margin: 20px 0; }
 
         .menu-section-title {
             font-size: 16px;
@@ -51,10 +61,7 @@
             letter-spacing: 0.5px;
         }
 
-        .action-form {
-            display: block;
-            margin: 10px 0;
-        }
+        .action-form { display: block; margin: 10px 0; }
 
         .menu-btn {
             width: 100%;
@@ -67,65 +74,25 @@
             transition: background-color 0.2s;
         }
 
-        .menu-btn.primary {
-            background-color: #007bff;
-            color: white;
-        }
+        .menu-btn.primary { background-color: #007bff; color: white; }
+        .menu-btn.primary:hover { background-color: #0056b3; }
 
-        .menu-btn.primary:hover {
-            background-color: #0056b3;
-        }
+        .menu-btn.secondary { background-color: #6c757d; color: white; }
+        .menu-btn.secondary:hover { background-color: #5a6268; }
 
-        .menu-btn.secondary {
-            background-color: #6c757d;
-            color: white;
-        }
+        .menu-btn.success { background-color: #28a745; color: white; }
+        .menu-btn.success:hover { background-color: #1e7e34; }
 
-        .menu-btn.secondary:hover {
-            background-color: #5a6268;
-        }
+        .menu-btn.warning { background-color: #ffc107; color: #333; }
+        .menu-btn.warning:hover { background-color: #e0a800; }
 
-        .menu-btn.info {
-            background-color: #17a2b8;
-            color: white;
-        }
+        .menu-btn.danger { background-color: #dc3545; color: white; }
+        .menu-btn.danger:hover { background-color: #c82333; }
 
-        .menu-btn.info:hover {
-            background-color: #138496;
-        }
+        .menu-btn.info { background-color: #17a2b8; color: white; }
+        .menu-btn.info:hover { background-color: #138496; }
 
-        .menu-btn.warning {
-            background-color: #ffc107;
-            color: #333;
-        }
-
-        .menu-btn.warning:hover {
-            background-color: #e0a800;
-        }
-
-        .menu-btn.danger {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        .menu-btn.danger:hover {
-            background-color: #c82333;
-        }
-
-        .menu-btn.success {
-            background-color: #28a745;
-            color: white;
-        }
-
-        .menu-btn.success:hover {
-            background-color: #1e7e34;
-        }
-
-        hr {
-            border: none;
-            border-top: 1px solid #dee2e6;
-            margin: 20px 0;
-        }
+        hr { border: none; border-top: 1px solid #dee2e6; margin: 20px 0; }
     </style>
 </head>
 <body>
@@ -135,6 +102,9 @@
 
     <div class="greeting">
         👋 Здравствуйте, <span class="greeting-name" th:text="${person.name}">Имя</span>
+        <span class="role-badge super_admin" th:if="${person.role == 'ROLE_SUPER_ADMIN'}">Супер-админ</span>
+        <span class="role-badge admin" th:if="${person.role == 'ROLE_ADMIN'}">Администратор</span>
+        <span class="role-badge librarian" th:if="${person.role == 'ROLE_LIBRARIAN'}">Библиотекарь</span>
     </div>
 
     <hr/>
@@ -142,27 +112,28 @@
     <div class="menu-section">
         <div class="menu-section-title">📚 Работа с книгами</div>
         <form class="action-form" th:action="@{/books}" th:method="GET">
-            <input class="menu-btn primary" type="submit" value="📖 Книги"/>
+            <input class="menu-btn primary" type="submit" value="📖 Поиск и управление книгами"/>
         </form>
     </div>
 
     <div sec:authorize="hasAnyRole('ADMIN', 'SUPER_ADMIN')">
         <hr/>
         <div class="menu-section">
-            <div class="menu-section-title">👥 Управление пользователями</div>
+            <div class="menu-section-title">👥 Пользователи</div>
             <form class="action-form" th:action="@{/people}" th:method="GET">
-                <input class="menu-btn secondary" type="submit" value="👤 Список всех людей"/>
+                <input class="menu-btn secondary" type="submit" value="👤 Список всех пользователей"/>
             </form>
         </div>
     </div>
 
-    <hr/>
-
-    <div class="menu-section">
-        <div class="menu-section-title">ℹ️ Прочее</div>
-        <form class="action-form" th:action="@{/showUserInfo}" th:method="GET">
-            <input class="menu-btn info" type="submit" value="🖥️ Вывести информацию о себе в консоль разработчика"/>
-        </form>
+    <div sec:authorize="hasAnyRole('ADMIN', 'SUPER_ADMIN')">
+        <hr/>
+        <div class="menu-section">
+            <div class="menu-section-title">🧑‍💼 Сотрудники библиотеки</div>
+            <form class="action-form" th:action="@{/staff}" th:method="GET">
+                <input class="menu-btn success" type="submit" value="👥 Управление сотрудниками"/>
+            </form>
+        </div>
     </div>
 
     <div sec:authorize="hasRole('SUPER_ADMIN')">

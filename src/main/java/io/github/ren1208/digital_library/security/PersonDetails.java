@@ -12,12 +12,7 @@ import java.util.Collections;
  * @author Artyom Semenchenko
  */
 
-public class PersonDetails implements UserDetails {
-    private final Person person;
-
-    public PersonDetails(Person person) {
-        this.person = person;
-    }
+public record PersonDetails(Person person) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -51,10 +46,7 @@ public class PersonDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return person.isActive();
     }
 
-    public Person getPerson() {
-        return this.person;
-    }
 }

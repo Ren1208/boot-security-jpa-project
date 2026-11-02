@@ -47,6 +47,7 @@ public class BooksController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'LIBRARIAN')")
     public String show(@PathVariable int id, Model model,
                        @ModelAttribute("person") Person person) {
         model.addAttribute("book", booksService.findOne(id));
@@ -106,14 +107,14 @@ public class BooksController {
     }
 
     @PatchMapping("/{id}/release")
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'LIBRARIAN')")
     public String release(@PathVariable int id) {
         booksService.release(id);
         return "redirect:/books/" + id;
     }
 
     @PatchMapping("/{id}/assign")
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'LIBRARIAN')")
     public String assign(@PathVariable int id, @ModelAttribute("person") Person person) {
         booksService.assign(id, person);
         return "redirect:/books/" + id;

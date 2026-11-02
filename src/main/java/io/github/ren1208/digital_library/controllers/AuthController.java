@@ -1,9 +1,13 @@
 package io.github.ren1208.digital_library.controllers;
 
+import io.github.ren1208.digital_library.DTO.ChangePasswordForm;
 import io.github.ren1208.digital_library.models.Person;
-import io.github.ren1208.digital_library.services.RegistrationService;
-import io.github.ren1208.digital_library.util.PersonValidator;
+import io.github.ren1208.digital_library.security.PersonDetails;
+import io.github.ren1208.digital_library.services.PeopleService;
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,12 +23,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final PersonValidator personValidator;
-    private final RegistrationService registrationService;
+    private final PeopleService peopleService;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(PersonValidator personValidator, RegistrationService registrationService) {
-        this.personValidator = personValidator;
-        this.registrationService = registrationService;
+    public AuthController(PeopleService peopleService, PasswordEncoder passwordEncoder) {
+        this.peopleService = peopleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/login")
@@ -32,21 +36,61 @@ public class AuthController {
         return "auth/login";
     }
 
-    @GetMapping("/registration")
-    public String registrationPage(@ModelAttribute("person") Person person) {
-        return "auth/registration";
+    @GetMapping("/change-password")
+    public String changePasswordPage(@ModelAttribute("form") ChangePasswordForm form,
+                                     Authentication authentication) {
+
+        Person person = extractPerson(authentication);
+
+        if (person == null || !person.isMustChangePassword()) {
+            return "redirect:/hello";
+        }
+
+        return "auth/change-password";
     }
 
-    @PostMapping("/registration")
-    public String performRegistration(@ModelAttribute("person") @Valid Person person,
-                                      BindingResult bindingResult) {
-        personValidator.validate(person, bindingResult);
+    @PostMapping("/change-password")
+    public String performChangePassword(@ModelAttribute("form") @Valid ChangePasswordForm form,
+                                        BindingResult bindingResult,
+                                        Authentication authentication) {
 
-        if (bindingResult.hasErrors())
-            return "auth/registration";
+        PersonDetails details = (PersonDetails) authentication.getPrincipal();
+        Person person = details.person();
 
-        registrationService.register(person);
+        if (!person.isMustChangePassword()) {
+            return "redirect:/hello";
+        }
 
-        return "redirect:/auth/login";
+        if (bindingResult.hasErrors()) {
+            return "auth/change-password";
+        }
+
+        if (!form.getNewPassword().equals(form.getConfirmPassword())) {
+            bindingResult.rejectValue("confirmPassword", "", "Пароли не совпадают");
+            return "auth/change-password";
+        }
+
+        if (passwordEncoder.matches(form.getNewPassword(), person.getPassword())) {
+            bindingResult.rejectValue("newPassword", "",
+                    "Новый пароль не должен совпадать с временным");
+            return "auth/change-password";
+        }
+
+        person.setPassword(passwordEncoder.encode(form.getNewPassword()));
+        person.setMustChangePassword(false);
+        peopleService.save(person);
+
+        SecurityContextHolder.clearContext();
+
+        return "redirect:/auth/login?passwordChanged";
+    }
+
+    private Person extractPerson(Authentication authentication) {
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || !(authentication.getPrincipal() instanceof PersonDetails(Person person))) {
+            return null;
+        }
+        return person;
     }
 }

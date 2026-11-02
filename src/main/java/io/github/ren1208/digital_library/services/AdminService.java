@@ -18,9 +18,9 @@ public class AdminService {
         this.peopleService = peopleService;
     }
 
-    public List<Person> getAllRegularUsers() {
+    public List<Person> getAllAssignableUsers() {
         return peopleService.findAll().stream()
-                .filter(p -> "ROLE_USER".equals(p.getRole()))
+                .filter(p -> "ROLE_LIBRARIAN".equals(p.getRole()))
                 .collect(Collectors.toList());
     }
 
@@ -32,12 +32,18 @@ public class AdminService {
 
     @Transactional
     public void grantAdminRole(int personId) {
-        peopleService.updateUserRole(peopleService.findOne(personId), "ROLE_ADMIN");
+        Person p = peopleService.findOne(personId);
+        if (p != null && "ROLE_LIBRARIAN".equals(p.getRole())) {
+            peopleService.updateUserRole(p, "ROLE_ADMIN");
+        }
     }
 
     @Transactional
     public void revokeAdminRole(int personId) {
-        peopleService.updateUserRole(peopleService.findOne(personId), "ROLE_USER");
+        Person p = peopleService.findOne(personId);
+        if (p != null && "ROLE_ADMIN".equals(p.getRole())) {
+            peopleService.updateUserRole(p, "ROLE_LIBRARIAN");
+        }
     }
 
 }

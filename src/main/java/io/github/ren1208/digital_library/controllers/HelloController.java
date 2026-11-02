@@ -21,24 +21,7 @@ public class HelloController {
 
         if (isAuthenticated(authentication)) {
             PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
-            Person person = personDetails.getPerson();
-            model.addAttribute("person", person);
-        }
-
-        return "hello";
-    }
-
-    @GetMapping("/showUserInfo")
-    public String showUserInfo(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (isAuthenticated(authentication)) {
-            PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
-            Person person = personDetails.getPerson();
-            System.out.println("Person ID: " + person.getPersonId());
-            System.out.println("Username: " + person.getName());
-            System.out.println("Role: " + person.getRole());
-            System.out.println("Books count: " + person.getBooks().size());
+            Person person = personDetails.person();
             model.addAttribute("person", person);
         }
 

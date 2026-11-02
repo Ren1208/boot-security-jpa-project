@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Управление сотрудниками</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .home-btn, .add-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .home-btn { background-color: #007bff; color: white; }
+        .home-btn:hover { background-color: #0056b3; }
+
+        .add-btn { background-color: #28a745; color: white; }
+        .add-btn:hover { background-color: #1e7e34; }
+
+        .divider { margin: 0 10px; color: #6c757d; }
+
+        .list-container {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 900px;
+            margin: 20px 0;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .list-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #17a2b8;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        thead {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 14px;
+            border-bottom: 1px solid #dee2e6;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f9fb;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .badge.super_admin { background-color: #6f42c1; color: white; }
+        .badge.admin { background-color: #dc3545; color: white; }
+        .badge.librarian { background-color: #17a2b8; color: white; }
+        .badge.inactive { background-color: #6c757d; color: white; }
+        .badge.temp-pass { background-color: #ffc107; color: #333; }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+            margin: 2px;
+        }
+
+        .action-btn.reset { background-color: #ffc107; color: #333; }
+        .action-btn.reset:hover { background-color: #e0a800; }
+
+        .action-btn.block { background-color: #dc3545; color: white; }
+        .action-btn.block:hover { background-color: #c82333; }
+
+        .action-btn.unblock { background-color: #28a745; color: white; }
+        .action-btn.unblock:hover { background-color: #1e7e34; }
+
+        .inline-form { display: inline-block; margin: 0; }
+
+        .empty-message {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 700px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+            text-align: center;
+        }
+
+        .empty-message-icon { font-size: 48px; display: block; margin-bottom: 15px; }
+        .empty-message-text { font-size: 18px; color: #856404; font-weight: bold; }
+        .empty-message-subtext { font-size: 14px; color: #6c757d; margin-top: 10px; }
+
+        hr { border: none; border-top: 1px solid #dee2e6; margin: 20px 0; }
+
+        .list-footer {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="button-group">
+    <form th:method="GET" th:action="@{/hello}">
+        <input class="home-btn" type="submit" value="🏠 В главное меню"/>
+    </form>
+
+    <span class="divider">|</span>
+
+    <form th:method="GET" th:action="@{/staff/new}">
+        <input class="add-btn" type="submit" value="➕ Создать сотрудника"/>
+    </form>
+</div>
+
+<hr/>
+
+<div th:if="${param.forbidden}"
+     style="background-color: #f8d7da; color: #721c24; padding: 12px 15px;
+            border-left: 4px solid #dc3545; border-radius: 4px; margin: 20px 0;
+            font-weight: bold;">
+    ⚠️ Нельзя выполнить операцию над этим пользователем.
+</div>
+
+<div th:if="${param.passwordError}"
+     style="background-color: #fff3cd; color: #856404; padding: 12px 15px;
+            border-left: 4px solid #ffc107; border-radius: 4px; margin: 20px 0;
+            font-weight: bold;">
+    ⚠️ Временный пароль должен содержать минимум 6 символов.
+</div>
+
+<div class="list-container">
+    <div class="list-title">👥 Управление сотрудниками</div>
+
+    <div th:if="${not #lists.isEmpty(people)}">
+        <table>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>ФИО</th>
+                <th>Год рождения</th>
+                <th>Роль</th>
+                <th>Статус</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="p : ${people}">
+                <td th:text="${pStat.count}">1</td>
+                <td th:text="${p.name}">Иванов Иван</td>
+                <td th:text="${p.yearOfBirth}">1990</td>
+                <td>
+                    <span class="badge super_admin" th:if="${p.role == 'ROLE_SUPER_ADMIN'}">Супер-админ</span>
+                    <span class="badge admin" th:if="${p.role == 'ROLE_ADMIN'}">Администратор</span>
+                    <span class="badge librarian" th:if="${p.role == 'ROLE_LIBRARIAN'}">Библиотекарь</span>
+                </td>
+                <td>
+                    <span class="badge temp-pass" th:if="${p.mustChangePassword}" title="Не менял временный пароль">⏳ Временный пароль</span>
+                    <span class="badge inactive" th:if="${!p.active}">Заблокирован</span>
+                    <span th:if="${p.active and !p.mustChangePassword}" style="color: #28a745; font-weight: bold;">Активен</span>
+                </td>
+                <td>
+
+                    <form class="inline-form"
+                          th:if="${p.role != 'ROLE_SUPER_ADMIN'}"
+                          th:method="POST"
+                          th:action="@{/staff/{id}/resetPassword(id=${p.personId})}">
+                        <label>
+                            <input type="text" name="tempPassword" placeholder="Временный пароль"
+                                   required minlength="6"
+                                   style="padding: 4px 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 12px; width: 140px;"/>
+                        </label>
+                        <input class="action-btn reset" type="submit" value="🔑 Сбросить"/>
+                    </form>
+
+                    <form class="inline-form"
+                          th:if="${p.role != 'ROLE_SUPER_ADMIN' and p.active}"
+                          th:method="POST"
+                          th:action="@{/staff/{id}/toggleActive(id=${p.personId})}"
+                          onsubmit="return confirm('Заблокировать этого сотрудника?');">
+                        <input class="action-btn block" type="submit" value="🚫 Заблокировать"/>
+                    </form>
+
+                    <form class="inline-form"
+                          th:if="${p.role != 'ROLE_SUPER_ADMIN' and !p.active}"
+                          th:method="POST"
+                          th:action="@{/staff/{id}/toggleActive(id=${p.personId})}">
+                        <input class="action-btn unblock" type="submit" value="✅ Разблокировать"/>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <hr/>
+
+        <div class="list-footer">
+            Всего сотрудников: <span th:text="${#lists.size(people)}"></span>
+        </div>
+    </div>
+
+    <div th:if="${#lists.isEmpty(people)}">
+        <div class="empty-message">
+            <span class="empty-message-icon">ℹ️</span>
+            <div class="empty-message-text">Список сотрудников пуст</div>
+            <div class="empty-message-subtext">Нажмите «Создать сотрудника», чтобы добавить первого</div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

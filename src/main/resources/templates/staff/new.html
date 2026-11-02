@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Создание сотрудника</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+    .button-group {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .back-btn, .home-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.2s;
+    }
+
+    .back-btn { background-color: #6c757d; color: white; }
+    .back-btn:hover { background-color: #5a6268; }
+
+    .home-btn { background-color: #007bff; color: white; }
+    .home-btn:hover { background-color: #0056b3; }
+
+    .divider { margin: 0 10px; color: #6c757d; }
+
+    .form-container {
+      background-color: #f8f9fa;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: 20px 0;
+      border-left: 4px solid #28a745;
+    }
+
+    .form-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #28a745;
+    }
+
+    .info-message {
+      background-color: #fff3cd;
+      padding: 15px;
+      border-radius: 4px;
+      border-left: 4px solid #ffc107;
+      color: #856404;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .form-group { margin-bottom: 20px; }
+
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+      background-color: white;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #28a745;
+      outline: 0;
+      box-shadow: 0 0 0 0.2rem rgba(40,167,69,0.25);
+    }
+
+    .form-group input[readonly] {
+      background-color: #e9ecef;
+      color: #6c757d;
+      cursor: not-allowed;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #6c757d;
+      margin-top: 6px;
+    }
+
+    .error-message {
+      color: #dc3545;
+      font-size: 13px;
+      margin-top: 5px;
+      padding: 5px 10px;
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      border-radius: 4px;
+    }
+
+    .submit-btn {
+      background-color: #28a745;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      width: 100%;
+      transition: background-color 0.2s;
+    }
+
+    .submit-btn:hover { background-color: #1e7e34; }
+
+    hr { border: none; border-top: 1px solid #dee2e6; margin: 20px 0; }
+  </style>
+</head>
+<body>
+
+<div class="button-group">
+  <a th:href="@{/staff}" style="text-decoration: none;">
+    <button type="button" class="back-btn">← К списку сотрудников</button>
+  </a>
+
+  <span class="divider">|</span>
+
+  <form th:method="GET" th:action="@{/hello}">
+    <input class="home-btn" type="submit" value="🏠 В главное меню"/>
+  </form>
+</div>
+
+<hr/>
+
+<div class="form-container">
+  <div class="form-title">➕ Создание нового сотрудника</div>
+
+  <div class="info-message">
+    ℹ️ Сотрудник получит <strong>временный пароль</strong>. При первом входе система
+    потребует сменить его на постоянный. Логином является ФИО сотрудника.
+  </div>
+
+  <form th:method="POST" th:action="@{/staff}" th:object="${person}">
+
+    <div class="form-group">
+      <label for="name">👤 ФИО (логин)</label>
+      <input type="text" th:field="*{name}" id="name" placeholder="Иванов Иван Иванович"/>
+      <div class="hint">Формат: «Фамилия Имя (Отчество)», только кириллица, каждое слово с заглавной буквы</div>
+      <div class="error-message" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="yearOfBirth">📅 Год рождения</label>
+      <input type="text" th:field="*{yearOfBirth}" id="yearOfBirth" placeholder="1990"/>
+      <div class="error-message" th:if="${#fields.hasErrors('yearOfBirth')}" th:errors="*{yearOfBirth}"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="tempPassword">🔑 Временный пароль</label>
+      <input type="text" name="tempPassword" id="tempPassword"
+             placeholder="Минимум 6 символов" required minlength="6"/>
+      <div class="hint">Сообщите этот пароль сотруднику. Он будет обязан сменить его при первом входе.</div>
+    </div>
+
+    <div sec:authorize="hasRole('SUPER_ADMIN')">
+      <div class="form-group">
+        <label for="role">🎭 Роль</label>
+        <select name="role" id="role">
+          <option value="ROLE_LIBRARIAN">Библиотекарь</option>
+          <option value="ROLE_ADMIN">Администратор</option>
+        </select>
+      </div>
+    </div>
+
+    <div sec:authorize="!hasRole('SUPER_ADMIN')">
+      <div class="form-group">
+        <label>🎭 Роль</label>
+        <label>
+          <input type="text" value="Библиотекарь" readonly/>
+        </label>
+        <input type="hidden" name="role" value="ROLE_LIBRARIAN"/>
+      </div>
+    </div>
+
+    <hr/>
+
+    <input class="submit-btn" type="submit" value="✅ Создать сотрудника"/>
+  </form>
+</div>
+
+</body>
+</html>

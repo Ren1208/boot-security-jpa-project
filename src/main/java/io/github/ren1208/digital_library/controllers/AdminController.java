@@ -23,7 +23,7 @@ public class AdminController {
 
     @GetMapping("/setAdmin")
     public String showSetAdminPage(Model model) {
-        model.addAttribute("people", adminService.getAllRegularUsers());
+        model.addAttribute("people", adminService.getAllAssignableUsers());
         return "/admin/setAdmin";
     }
 

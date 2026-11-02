@@ -43,8 +43,10 @@ public class PeopleService {
 
     @Transactional
     public void update(int id, Person updatedPerson) {
-        updatedPerson.setPersonId(id);
-        peopleRepository.save(updatedPerson);
+        peopleRepository.findById(id).ifPresent(existing -> {
+            existing.setName(updatedPerson.getName());
+            existing.setYearOfBirth(updatedPerson.getYearOfBirth());
+        });
     }
 
     @Transactional
@@ -54,8 +56,16 @@ public class PeopleService {
     }
 
     @Transactional
-    public void delete(int id){
-        peopleRepository.deleteById(id);
+    public void delete(int id) {
+        peopleRepository.findById(id).ifPresent(person -> {
+            person.getBooks().forEach(book -> {
+                book.setOwner(null);
+                book.setTakenAt(null);
+                book.setExpired(false);
+            });
+
+            peopleRepository.delete(person);
+        });
     }
 
     public List<Book> getBooksByPersonId(int id) {

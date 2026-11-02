@@ -161,6 +161,13 @@
 
 <hr/>
 
+<div th:if="${param.forbidden}"
+     style="background-color: #f8d7da; color: #721c24; padding: 12px 15px;
+            border-left: 4px solid #dc3545; border-radius: 4px; margin: 20px 0;
+            font-weight: bold;">
+    ⚠️ У вас недостаточно прав для выполнения этого действия.
+</div>
+
 <div class="list-container">
     <div class="list-title">👥 Список людей</div>
 

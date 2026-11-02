@@ -36,10 +36,15 @@ public class Person {
     private int yearOfBirth;
 
     @Column(name = "password")
-    @NotEmpty(message = "Пароль не может быть пустым")
     private String password;
 
     @Column(name = "role")
     private String role;
+
+    @Column(name = "must_change_password")
+    private boolean mustChangePassword = false;
+
+    @Column(name = "is_active")
+    private boolean isActive = true;
 
 }

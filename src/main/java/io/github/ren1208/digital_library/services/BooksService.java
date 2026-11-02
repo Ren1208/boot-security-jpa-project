@@ -4,7 +4,6 @@ import io.github.ren1208.digital_library.models.Book;
 import io.github.ren1208.digital_library.models.Person;
 import io.github.ren1208.digital_library.repositories.BooksRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,16 +85,6 @@ public class BooksService {
                     book.setOwner(selectedPerson);
                     book.setTakenAt(new Date());
                 });
-    }
-
-    public List<Book> findWithPagination(Integer page,
-                                         Integer numberOfBooksPerPage,
-                                         boolean sortedByYear) {
-        if (sortedByYear)
-            return booksRepository.findAll(PageRequest.of(page, numberOfBooksPerPage,
-                    Sort.by("yearOfRelease"))).getContent();
-        else
-            return booksRepository.findAll(PageRequest.of(page, numberOfBooksPerPage)).getContent();
     }
 
     public List<Book> searchByTitle(String name) {

@@ -1,189 +1,47 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8">
-    <title>Информация о книге</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-
-        .button-group {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .back-btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            background-color: #6c757d;
-            color: white;
-        }
-
-        .back-btn:hover { background-color: #5a6268; }
-
-        .divider { margin: 0 10px; color: #6c757d; }
-
-        .home-btn {
-            background-color: #007bff;
-            color: white;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .home-btn:hover { background-color: #0056b3; }
-
-        .book-info-container {
-            background-color: #f8f9fa;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin: 20px 0;
-            border-left: 4px solid #007bff;
-        }
-
-        .book-title {
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #007bff;
-        }
-
-        .book-details {
-            font-size: 18px;
-            color: #333;
-            padding: 15px;
-            background-color: white;
-            border-radius: 4px;
-            margin-bottom: 20px;
-        }
-
-        .info-box {
-            background-color: white;
-            padding: 15px;
-            border-radius: 4px;
-            margin: 15px 0;
-            border-left: 4px solid #ffc107;
-        }
-
-        .info-box.occupied { border-left-color: #dc3545; }
-        .info-box.free { border-left-color: #28a745; }
-
-        .action-btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            margin: 5px 5px 5px 0;
-            transition: background-color 0.2s;
-        }
-
-        .action-btn.release { background-color: #dc3545; color: white; }
-        .action-btn.release:hover { background-color: #c82333; }
-
-        .action-btn.assign { background-color: #28a745; color: white; }
-        .action-btn.assign:hover { background-color: #1e7e34; }
-
-        .action-btn.edit { background-color: #ffc107; color: #333; }
-        .action-btn.edit:hover { background-color: #e0a800; }
-
-        .action-btn.delete { background-color: #dc3545; color: white; }
-        .action-btn.delete:hover { background-color: #c82333; }
-
-        .form-group { margin: 15px 0; }
-
-        .form-group select {
-            padding: 8px 12px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            font-size: 14px;
-            min-width: 250px;
-        }
-
-        .form-group select:focus {
-            border-color: #007bff;
-            outline: 0;
-            box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
-        }
-
-        .button-container {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #dee2e6;
-        }
-
-        .status-text {
-            font-size: 16px;
-            padding: 10px;
-            border-radius: 4px;
-            margin: 10px 0;
-        }
-
-        .status-text.occupied { background-color: #f8d7da; color: #721c24; }
-        .status-text.free { background-color: #d4edda; color: #155724; }
-
-        .action-form { display: inline-block; margin: 5px 5px 5px 0; }
-
-        hr { border: none; border-top: 1px solid #dee2e6; margin: 20px 0; }
-    </style>
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/layout :: head('Информация о книге')}"></head>
 <body>
 
-<div class="button-group">
-    <a th:href="@{/books}" style="text-decoration: none;">
-        <button type="button" class="back-btn">← К списку книг</button>
-    </a>
-
-    <span class="divider">|</span>
-
+<div class="toolbar">
+    <a th:href="@{/books}" class="btn btn-secondary">← К списку книг</a>
+    <span class="toolbar-divider">|</span>
     <form th:method="GET" th:action="@{/hello}">
-        <input class="home-btn" type="submit" value="🏠 В главное меню"/>
+        <input class="btn btn-primary" type="submit" value="🏠 В главное меню"/>
     </form>
 </div>
 
 <hr/>
 
-<div class="book-info-container">
-    <div class="book-title">📖 Информация о книге</div>
+<div class="card card-primary card-wide">
+    <div class="card-title">📖 Информация о книге</div>
 
-    <div class="book-details">
-        <span th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYearOfRelease()}">
-            Название, Автор, Год
-        </span>
+    <div style="font-size: 18px; padding: 15px; background-color: white;
+                border-radius: 4px; margin-bottom: 20px;">
+        <span th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYearOfRelease()}"></span>
     </div>
 
+    <!-- LIBRARIAN: только статус, без действий -->
     <div sec:authorize="hasRole('LIBRARIAN')">
-        <div th:if="${owner}" class="status-text occupied">
-            ⛔ Книга сейчас у: <strong th:text="${owner.getName()}">Person Name</strong>
+        <div th:if="${owner}" class="alert alert-error" style="font-weight: normal;">
+            ⛔ Книга сейчас у: <strong th:text="${owner.getName()}"></strong>
         </div>
-        <div th:if="${owner == null}" class="status-text free">
+        <div th:if="${owner == null}" class="alert alert-success" style="font-weight: normal;">
             ✅ Книга свободна
         </div>
     </div>
 
+    <!-- ADMIN / SUPER_ADMIN / LIBRARIAN: выдача и возврат -->
     <div sec:authorize="hasAnyRole('ADMIN', 'SUPER_ADMIN', 'LIBRARIAN')">
         <div th:if="${owner}" class="info-box occupied">
             <div style="margin-bottom: 15px;">
                 <span style="font-weight: bold;">📖 Книга сейчас у:</span>
-                <span th:text="${owner.getName()}" style="color: #dc3545; font-weight: bold;">Person Name</span>
+                <span th:text="${owner.getName()}" style="color: #dc3545; font-weight: bold;"></span>
             </div>
-
-            <form class="action-form" th:method="PATCH"
+            <form th:method="PATCH"
                   th:action="@{/books/{id}/release(id=${book.getBookId()})}">
-                <input class="action-btn release" type="submit" value="🔓 Освободить книгу"/>
+                <input class="btn btn-danger" type="submit" value="🔓 Освободить книгу"/>
             </form>
         </div>
 
@@ -191,7 +49,6 @@
             <p style="font-weight: bold; color: #28a745; margin-bottom: 15px;">
                 ✅ Эта книга свободна. Кому назначить её?
             </p>
-
             <form th:method="PATCH"
                   th:action="@{/books/{id}/assign(id=${book.getBookId()})}">
                 <div class="form-group">
@@ -202,23 +59,22 @@
                                 th:text="${person.getName()}"></option>
                     </select>
                 </div>
-                <input class="action-btn assign" type="submit" value="📌 Назначить книгу"/>
+                <input class="btn btn-success" type="submit" value="📌 Назначить книгу"/>
             </form>
         </div>
     </div>
 
+    <!-- ADMIN / SUPER_ADMIN: редактирование и удаление -->
     <div sec:authorize="hasAnyRole('ADMIN', 'SUPER_ADMIN')">
         <hr/>
-
-        <div class="button-container">
-            <form class="action-form" th:method="GET"
+        <div class="form-actions">
+            <form th:method="GET"
                   th:action="@{/books/{id}/edit(id=${book.getBookId()})}">
-                <input class="action-btn edit" type="submit" value="✏️ Редактировать"/>
+                <input class="btn btn-warning" type="submit" value="✏️ Редактировать"/>
             </form>
-
-            <form class="action-form" th:method="DELETE"
+            <form th:method="DELETE"
                   th:action="@{/books/{id}(id=${book.getBookId()})}">
-                <input class="action-btn delete" type="submit" value="🗑️ Удалить"
+                <input class="btn btn-danger" type="submit" value="🗑️ Удалить"
                        onclick="return confirm('Вы уверены, что хотите удалить эту книгу?');"/>
             </form>
         </div>

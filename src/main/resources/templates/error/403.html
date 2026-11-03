@@ -1,20 +1,29 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Доступ запрещен</title>
-    <meta charset="UTF-8">
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Доступ запрещён')}"></head>
 <body>
-<h1>Доступ запрещен (403)</h1>
-<p>У вас недостаточно прав для просмотра этой страницы.</p>
-<hr/>
-<br/>
-<form th:action="@{/hello}" th:method="GET">
-    <input type="submit" value="Вернуться на главную страницу"/>
-</form>
-<br/>
-<form th:action="@{/logout}" th:method="POST">
-    <input type="submit" value="Войти под другой учётной записью"/>
-</form>
+
+<div class="card card-danger card-narrow">
+    <div class="card-title">🚫 Доступ запрещён (403)</div>
+
+    <p style="font-size: 16px;">
+        У вас недостаточно прав для просмотра этой страницы.
+    </p>
+
+    <hr/>
+
+    <div class="form-actions">
+        <form th:action="@{/hello}" th:method="GET">
+            <input class="btn btn-primary" type="submit"
+                   value="🏠 Вернуться на главную"/>
+        </form>
+
+        <form th:action="@{/logout}" th:method="POST">
+            <input class="btn btn-secondary" type="submit"
+                   value="🚪 Войти под другой учётной записью"/>
+        </form>
+    </div>
+</div>
+
 </body>
 </html>

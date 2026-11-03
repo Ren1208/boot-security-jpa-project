@@ -2,6 +2,7 @@ package io.github.ren1208.digital_library.config;
 
 import io.github.ren1208.digital_library.models.Person;
 import io.github.ren1208.digital_library.security.PersonDetails;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -25,6 +26,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/auth/login", "/error").permitAll()
                         .anyRequest().authenticated()
                 )

@@ -192,7 +192,7 @@
   <div class="person-title">👤 Информация о человеке</div>
 
   <div class="person-details">
-    <span th:text="${person.getName() + ', ' + person.getYearOfBirth()}">ФИО, Год рождения</span>
+    <span th:text="${person.getName() + ', ' + person.getDateOfBirth()}">ФИО, Дата рождения</span>
   </div>
 
   <div th:if="${books.isEmpty()}" class="info-box empty">

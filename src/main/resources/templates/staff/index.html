@@ -175,7 +175,7 @@
             <tr>
                 <th>#</th>
                 <th>ФИО</th>
-                <th>Год рождения</th>
+                <th>Дата рождения</th>
                 <th>Роль</th>
                 <th>Статус</th>
                 <th>Действия</th>
@@ -185,7 +185,7 @@
             <tr th:each="p : ${people}">
                 <td th:text="${pStat.count}">1</td>
                 <td th:text="${p.name}">Иванов Иван</td>
-                <td th:text="${p.yearOfBirth}">1990</td>
+                <td th:text="${p.dateOfBirth}">1990</td>
                 <td>
                     <span class="badge super_admin" th:if="${p.role == 'ROLE_SUPER_ADMIN'}">Супер-админ</span>
                     <span class="badge admin" th:if="${p.role == 'ROLE_ADMIN'}">Администратор</span>

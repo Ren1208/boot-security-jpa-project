@@ -45,7 +45,7 @@ public class PeopleService {
     public void update(int id, Person updatedPerson) {
         peopleRepository.findById(id).ifPresent(existing -> {
             existing.setName(updatedPerson.getName());
-            existing.setYearOfBirth(updatedPerson.getYearOfBirth());
+            existing.setDateOfBirth(updatedPerson.getDateOfBirth());
         });
     }
 

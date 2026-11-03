@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -30,10 +31,10 @@ public class Person {
     @Column(name = "name")
     private String name;
 
-    @Min(value = 1900, message = "Год рождения должен быть больше 1900.")
-    @Max(value = 2024, message = "Год рождения должен быть меньше 2025.")
-    @Column(name = "year_of_birth")
-    private int yearOfBirth;
+    @Past
+    @NotNull
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
 
     @Column(name = "password")
     private String password;

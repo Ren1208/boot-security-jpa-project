@@ -175,7 +175,7 @@
         <div th:each="person : ${people}" class="person-item">
             <span class="person-id" th:text="'#' + ${personStat.count}"></span>
             <a th:href="@{/people/{id}(id=${person.getPersonId()})}"
-               th:text="${person.getName() + ', ' + person.getYearOfBirth()}"
+               th:text="${person.getName() + ', ' + person.getDateOfBirth()}"
                class="person-link">
                 Имя, Год рождения
             </a>
